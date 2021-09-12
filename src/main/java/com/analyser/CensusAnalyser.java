@@ -22,10 +22,11 @@ import java.util.stream.StreamSupport;
  * Indian State Census Analyser
  */
 public class CensusAnalyser {
+
     public static boolean checkDelimiter(String filePath, String delimitingCharacter) throws IOException, CensusAnalyserException {
         try {
             Scanner input = new Scanner(Paths.get(filePath));
-            input.useDelimiter(";");
+            input.useDelimiter(",");
             Pattern result = input.delimiter();
             if (result.pattern().equals(delimitingCharacter)){
                 return true;
@@ -41,12 +42,14 @@ public class CensusAnalyser {
         int count = 0;
         try {
             int index = filePath.lastIndexOf('.');
+            if(!filePath.startsWith(".csv", index)){
+                throw new CensusAnalyserException("Incorrect type", CensusAnalyserException.ExceptionType.FILE_TYPE_INCORRECT);
+            }
             FileReader filereader = new FileReader(filePath);
             CSVParser parser = new CSVParser();
-            if (checkDelimiter(filePath, ",")) {
+            if (checkDelimiter(filePath, ";")) {
                 parser = new CSVParserBuilder().withSeparator(',').build();
                 CSVReader csvReader = new CSVReaderBuilder(filereader).withCSVParser(parser).build();
-                ;
                 List<String[]> allData = csvReader.readAll();
                 for (String[] row : allData) {
                     count++;
