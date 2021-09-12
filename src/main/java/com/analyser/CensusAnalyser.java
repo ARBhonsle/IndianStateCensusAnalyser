@@ -4,20 +4,14 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 /**
  * Indian State Census Analyser
@@ -40,7 +34,7 @@ public class CensusAnalyser {
             Scanner input = new Scanner(Paths.get(filePath));
             input.useDelimiter(",");
             Pattern result = input.delimiter();
-            if (result.pattern().equals(delimitingCharacter)){
+            if (result.pattern().equals(delimitingCharacter)) {
                 return true;
             } else {
                 throw new Exception("Incorrect Delimiter");
