@@ -1,7 +1,5 @@
 package com.analyser;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -59,5 +57,15 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.FILE_DELIMITER_INCORRECT,e.type);
         }
     }
-
+    @Test
+    public void givenIndianStateCSV_ShouldThrowException_IncorrectHeaderPassed(){
+        try{
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            ExpectedException exception = ExpectedException.none();
+            exception.expect(CensusAnalyserException.class);
+            censusAnalyser.loadIndianCensusData(INDIA_CENSUS_FILE_PATH);
+        } catch (CensusAnalyserException e){
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.INCORRECT_HEADER,e.type);
+        }
+    }
 }

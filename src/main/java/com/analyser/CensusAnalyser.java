@@ -7,6 +7,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -22,6 +23,17 @@ import java.util.stream.StreamSupport;
  * Indian State Census Analyser
  */
 public class CensusAnalyser {
+    public static boolean checkHeader(String filePath, String[] stringName) throws IOException, CensusAnalyserException {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String line = br.readLine();
+        String[] header = line.split(",");
+        for (int i = 0; i < header.length && i < stringName.length; i++) {
+            if (!stringName[i].equals(header[i])){
+                throw new CensusAnalyserException("Incorrect header!", CensusAnalyserException.ExceptionType.INCORRECT_HEADER);
+            }
+        }
+        return true;
+    }
 
     public static boolean checkDelimiter(String filePath, String delimitingCharacter) throws IOException, CensusAnalyserException {
         try {
@@ -46,19 +58,21 @@ public class CensusAnalyser {
                 throw new CensusAnalyserException("Incorrect type", CensusAnalyserException.ExceptionType.FILE_TYPE_INCORRECT);
             }
             FileReader filereader = new FileReader(filePath);
-            CSVParser parser = new CSVParser();
-            if (checkDelimiter(filePath, ";")) {
+            CSVParser parser;
+            if (checkDelimiter(filePath, ",")) {
                 parser = new CSVParserBuilder().withSeparator(',').build();
                 CSVReader csvReader = new CSVReaderBuilder(filereader).withCSVParser(parser).build();
                 List<String[]> allData = csvReader.readAll();
-                for (String[] row : allData) {
-                    count++;
-                    for (String cell : row) {
-                        System.out.print(cell + "\t");
+                String[] header={"State","Population","AreaInKmSq","DensityPerSqKm"};
+                if(checkHeader(filePath,header)){
+                    for (String[] row : allData) {
+                        count++;
+                        for (String cell : row) {
+                            System.out.print(cell + "\t");
+                        }
+                        System.out.println();
                     }
-                    System.out.println();
                 }
-
             }
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
