@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
  */
 public class CensusAnalyserTest {
     private static final String INDIA_CENSUS_FILE_PATH = "src/resources/IndianStateCensus.csv";
+    private static final String INDIA_CENSUS_WRONG_FILE_PATH = "main/resources/IndianStateCensus.csv";
 
     @Test
     public void givenIndianStateCSV_ShouldReturnExactCount() throws Exception {
@@ -22,4 +23,17 @@ public class CensusAnalyserTest {
             throw new Exception(e);
         }
     }
+
+    @Test
+    public void givenIndianStateCSV_ShouldThrowException(){
+        try{
+            CensusAnalyser censusAnalyser = new CensusAnalyser();
+            ExpectedException exception = ExpectedException.none();
+            exception.expect(CensusAnalyserException.class);
+            censusAnalyser.loadIndianCensusData(INDIA_CENSUS_WRONG_FILE_PATH);
+        } catch (CensusAnalyserException e){
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM,e.type);
+        }
+    }
+
 }
