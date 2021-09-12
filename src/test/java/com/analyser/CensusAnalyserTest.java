@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
  * Unit test for simple CensusAnalyser.
  */
 public class CensusAnalyserTest {
-    private static final String INDIA_CENSUS_FILE_PATH = "src/resources/IndianStateCensus.csv";
+    private static final String INDIA_CENSUS_FILE_PATH = "src/resources/.csv";
     private static final String INDIA_CENSUS_WRONG_FILE_PATH = "main/resources/IndianStateCensus.csv";
     private static final String INDIA_CENSUS_WRONG_FILE_TYPE = "src/resources/IndianStateCensus.txt";
 
