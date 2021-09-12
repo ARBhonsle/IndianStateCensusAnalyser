@@ -20,6 +20,10 @@ public class CensusAnalyser {
     public static int loadIndianCensusData(String filePath) throws CensusAnalyserException {
         int count = 0;
         try {
+            int index = filePath.lastIndexOf('.');
+            if(!filePath.startsWith(".csv", index)){
+                throw new CensusAnalyserException("Incorrect type", CensusAnalyserException.ExceptionType.FILE_TYPE_INCORRECT);
+            }
             FileReader filereader = new FileReader(filePath);
             CSVReader csvReader = new CSVReader(filereader);
             String[] nextRecord;
@@ -30,6 +34,7 @@ public class CensusAnalyser {
                 }
                 System.out.println();
             }
+
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (IllegalStateException e) {
