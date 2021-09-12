@@ -1,6 +1,9 @@
 package com.analyser;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
@@ -10,31 +13,50 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
 /**
  * Indian State Census Analyser
  */
 public class CensusAnalyser {
+    public static boolean checkDelimiter(String filePath, String delimitingCharacter) throws IOException, CensusAnalyserException {
+        try {
+            Scanner input = new Scanner(Paths.get(filePath));
+            input.useDelimiter(";");
+            Pattern result = input.delimiter();
+            if (result.pattern().equals(delimitingCharacter)){
+                return true;
+            } else {
+                throw new Exception("Incorrect Delimiter");
+            }
+        } catch (Exception e) {
+            throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.FILE_DELIMITER_INCORRECT);
+        }
+    }
 
     public static int loadIndianCensusData(String filePath) throws CensusAnalyserException {
         int count = 0;
         try {
             int index = filePath.lastIndexOf('.');
-            if(!filePath.startsWith(".csv", index)){
-                throw new CensusAnalyserException("Incorrect type", CensusAnalyserException.ExceptionType.FILE_TYPE_INCORRECT);
-            }
             FileReader filereader = new FileReader(filePath);
-            CSVReader csvReader = new CSVReader(filereader);
-            String[] nextRecord;
-            while ((nextRecord = csvReader.readNext()) != null) {
-                count++;
-                for (String cell : nextRecord) {
-                    System.out.print(cell + "\t");
+            CSVParser parser = new CSVParser();
+            if (checkDelimiter(filePath, ",")) {
+                parser = new CSVParserBuilder().withSeparator(',').build();
+                CSVReader csvReader = new CSVReaderBuilder(filereader).withCSVParser(parser).build();
+                ;
+                List<String[]> allData = csvReader.readAll();
+                for (String[] row : allData) {
+                    count++;
+                    for (String cell : row) {
+                        System.out.print(cell + "\t");
+                    }
+                    System.out.println();
                 }
-                System.out.println();
-            }
 
+            }
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(), CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (IllegalStateException e) {
