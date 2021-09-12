@@ -63,7 +63,7 @@ public class CensusAnalyser {
                 parser = new CSVParserBuilder().withSeparator(',').build();
                 CSVReader csvReader = new CSVReaderBuilder(filereader).withCSVParser(parser).build();
                 List<String[]> allData = csvReader.readAll();
-                String[] header={"State","Population","AreaInKmSq","DensityPerSqKm"};
+                String[] header={"State","Population","AreaInSqKm","DensityPerSqKm"};
                 if(checkHeader(filePath,header)){
                     for (String[] row : allData) {
                         count++;
